@@ -30,7 +30,9 @@
  * @version: V1.0   
  */
 package xyz.haojun0823.ceon;
- 
+
+import java.util.Arrays;
+
 /** 
  * @ClassName: CeonTest 
  * @Description: Test class.
@@ -39,7 +41,7 @@ package xyz.haojun0823.ceon;
  */
 public class CeonTest {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws CeonParseException {
 		
 		CeonObject data = new CeonObject();
 		
@@ -52,8 +54,11 @@ public class CeonTest {
 		right.put("id", 0);
 		right.put("message", "abc");
 		right.put("data", new Double[] {0.2,1.4,0.12983});
-		
-		
+		CeonObject test = new CeonObject();
+		test.put("test1", 213912);
+		test.put("test2", new Double[]{209.2,1859.4,20391.2});
+		test.put("test3", new CeonObject());
+		right.put("testObject", test);
 		data.put("X_OBJ", new CeonObject[]{right,left});
 		
 		
@@ -71,6 +76,8 @@ public class CeonTest {
 		
 		
 		System.out.println(data.toString());
+		
+		System.out.println(Arrays.toString(CeonParser.parseArray(CeonType.STRING_ARRAY, "[\'test\',\'\\\'test\\\'\']")));
 		//System.out.println(CeonObject.convert(data.toString()));
 	}
 	

@@ -208,50 +208,18 @@ public class CeonObject implements Serializable, Iterable<Entry<String, CeonData
 
 	@Override
 	public Iterator<Entry<String, CeonData>> iterator() {
-		// TODO Auto-generated method stub
 		return this.map.entrySet().iterator();
 	}
 
 	public String toString() {
 
 		try {
-			return convert(this, 0, false);
+			return new CeonParser().convert(this);
 		} catch (CeonParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
-
-	public static CeonObject convert(String text) throws CeonParseException {
-		CeonObject result = new CeonObject();
-		text = clearText(text);
-		
-		int cursor = 0;
-		boolean hasKey = false;
-		String key;
-		
-		
-		while(cursor<text.length()) {
-			
-			char c = text.charAt(cursor);
-			
-			if(!hasKey&&text.charAt(cursor+1)=='-') {
-				
-			}
-			
-			
-			
-			
-			
-			
-		}
-		
-		
-
-		return result;
-	}
-
 
 	public static String clearText(String text) {
 
@@ -266,157 +234,6 @@ public class CeonObject implements Serializable, Iterable<Entry<String, CeonData
 		}
 
 		return strBuild.toString();
-
-	}
-
-	private static String convert(CeonObject ceon, int deep, boolean childObj) throws CeonParseException {
-
-		Iterator<Entry<String, CeonData>> iterator = ceon.iterator();
-		StringBuffer strBuff = new StringBuffer();
-		int count = 0;
-		boolean isLeaf = true;
-		while (iterator.hasNext()) {
-			Entry<String, CeonData> entry = iterator.next();
-			String key = entry.getKey();
-			CeonData value = entry.getValue();
-			CeonType type = value.getType();
-
-			if (count == 0 && deep != 0) {
-				strBuff.append('\n');
-			}
-
-			for (int i = 0; i < deep; i++) {
-				strBuff.append('\t');
-			}
-
-			strBuff.append(type.getToken());
-			strBuff.append('-');
-
-			strBuff.append(key);
-			strBuff.append('=');
-
-			if (value.isArray()) {
-
-				strBuff.append('[');
-				if (type.equals(CeonType.INTEGER_ARRAY)) {
-
-					Long[] arr = (Long[]) value.get();
-
-					for (int i = 0; i < arr.length - 1; i++) {
-						strBuff.append(arr[i]);
-						strBuff.append(',');
-					}
-					strBuff.append(arr[arr.length - 1]);
-
-				} else
-
-				if (type.equals(CeonType.FLOAT_ARRAY)) {
-
-					Double[] arr = (Double[]) value.get();
-
-					for (int i = 0; i < arr.length - 1; i++) {
-						strBuff.append(arr[i]);
-						strBuff.append(',');
-					}
-					strBuff.append(arr[arr.length - 1]);
-
-				} else
-
-				if (type.equals(CeonType.BOOL_ARRAY)) {
-
-					Boolean[] arr = (Boolean[]) value.get();
-
-					for (int i = 0; i < arr.length - 1; i++) {
-						strBuff.append(arr[i]);
-						strBuff.append(',');
-					}
-					strBuff.append(arr[arr.length - 1]);
-
-				} else if (type.equals(CeonType.STRING_ARRAY)) {
-
-					String[] arr = (String[]) value.get();
-
-					for (int i = 0; i < arr.length - 1; i++) {
-						strBuff.append('\'');
-						strBuff.append(arr[i]);
-						strBuff.append('\'');
-						strBuff.append(',');
-					}
-					strBuff.append('\'');
-					strBuff.append(arr[arr.length - 1]);
-					strBuff.append('\'');
-
-				} else if (type.equals(CeonType.OBJECT_ARRAY)) {
-					isLeaf = false;
-					CeonObject[] arr = (CeonObject[]) value.get();
-
-					for (int i = 0; i < arr.length - 1; i++) {
-						strBuff.append(convert(arr[i], deep + 1, true));
-						strBuff.append(',');
-					}
-					strBuff.append(convert(arr[arr.length - 1], deep + 1, true));
-
-				} else {
-
-					throw new CeonParseException();
-
-				}
-				strBuff.append(']');
-
-			} else
-
-			if (type.equals(CeonType.INTEGER)) {
-
-				strBuff.append((Long) value.get());
-
-			} else
-
-			if (type.equals(CeonType.FLOAT)) {
-
-				strBuff.append((Double) value.get());
-
-			} else
-
-			if (type.equals(CeonType.BOOL)) {
-
-				strBuff.append((Boolean) value.get());
-
-			} else if (type.equals(CeonType.STRING)) {
-
-				strBuff.append('\'');
-				strBuff.append((String) value.get());
-				strBuff.append('\'');
-
-			} else if (type.equals(CeonType.OBJECT)) {
-				isLeaf = false;
-				strBuff.append(convert((CeonObject) value.get(), deep + 1, true));
-
-			} else {
-				throw new CeonParseException();
-			}
-			if (iterator.hasNext()) {
-				if (!isLeaf) {
-					for (int i = 0; i < deep; i++) {
-						strBuff.append('\t');
-					}
-				}
-				strBuff.append(',');
-			} else {
-				if (!isLeaf) {
-					for (int i = 0; i < deep; i++) {
-						strBuff.append('\t');
-					}
-				}
-				if (!iterator.hasNext()) {
-					strBuff.append(';');
-				}
-			}
-			strBuff.append('\n');
-			count++;
-
-		}
-
-		return strBuff.toString();
 
 	}
 
@@ -453,6 +270,12 @@ public class CeonObject implements Serializable, Iterable<Entry<String, CeonData
 	public boolean checkKeyVaild(String key) {
 
 		return true;
+	}
+
+	public static CeonObject parse(String text) throws CeonParseException {
+		text = clearText(text);
+
+		return new CeonParser().convert(text);
 	}
 
 }
