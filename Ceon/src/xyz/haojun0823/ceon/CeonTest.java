@@ -77,8 +77,8 @@ public class CeonTest {
 		
 		System.out.println(data.toString());
 		
-		System.out.println(Arrays.toString(CeonParser.parseArray(CeonType.STRING_ARRAY, "[\'test\',\'\\\'test\\\'\']")));
-		//System.out.println(CeonObject.convert(data.toString()));
+		//System.out.println(Arrays.toString(CeonParser.parseArray(CeonType.STRING_ARRAY, "[\'test\',\'\\\'test\\\'\']")));
+		System.out.println(new CeonParser().convert(data.toString()).toString());
 	}
 	
 }
